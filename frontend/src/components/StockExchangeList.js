@@ -9,6 +9,7 @@ import {
   getStocks,
 } from "../api/api";
 import { toast } from "react-toastify";
+import useWebSocket from "../api/useWebSocket";
 
 const StockExchangeList = () => {
   const [exchanges, setExchanges] = useState([]);
@@ -18,11 +19,32 @@ const StockExchangeList = () => {
   const [selectedStockId, setSelectedStockId] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: "name", direction: "asc" });
-  const [showLiveOnly, setShowLiveOnly] = useState(false); // 🔥 NEW
+  const [showLiveOnly, setShowLiveOnly] = useState(false);
 
   useEffect(() => {
     loadData();
   }, []);
+
+  useWebSocket({
+    onExchangeUpdate: (updated) => {
+      setExchanges((prev) => {
+        const index = prev.findIndex((s) => s.id === updated.id);
+        if (index !== -1) {
+          // exists → overwrite
+          const newArr = [...prev];
+          newArr[index] = updated;
+          return newArr;
+        } else {
+          // doesn't exist → insert
+          return [...prev, updated];
+        }
+      });
+    },
+    onExchangeDelete: (deletedId) => {
+      setExchanges((prev) => prev.filter((ex) => ex.id !== deletedId));
+    },
+  });
+
 
   const loadData = async () => {
     try {

@@ -7,6 +7,7 @@ import {
   getExchanges,
 } from "../api/api";
 import { toast } from "react-toastify";
+import useWebSocket from "../api/useWebSocket";
 
 function StockList() {
   const [stocks, setStocks] = useState([]);
@@ -27,6 +28,26 @@ function StockList() {
   useEffect(() => {
     loadData();
   }, []);
+
+  useWebSocket({
+    onStockUpdate: (updated) => {
+      setStocks((prev) => {
+        const index = prev.findIndex((s) => s.id === updated.id);
+        if (index !== -1) {
+          // exists → overwrite
+          const newArr = [...prev];
+          newArr[index] = updated;
+          return newArr;
+        } else {
+          // doesn't exist → insert
+          return [...prev, updated];
+        }
+      });
+    },
+    onStockDelete: (deletedId) => {
+      setStocks((prev) => prev.filter((s) => s.id !== deletedId));
+    },
+  });
 
   const loadData = async () => {
     setLoading(true);

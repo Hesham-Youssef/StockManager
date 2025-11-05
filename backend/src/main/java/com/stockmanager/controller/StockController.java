@@ -4,6 +4,7 @@ package com.stockmanager.controller;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StockController {
     private final StockService stockService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @GetMapping
     public ResponseEntity<?> listAll(){
@@ -42,19 +44,23 @@ public class StockController {
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody CreateStockRequest req){
         Stock created = stockService.create(req.getName(), req.getDescription(), req.getCurrentPrice());
-        return ResponseEntity.status(201).body(toDto(created));
+        StockDto dto = toDto(created);
+        messagingTemplate.convertAndSend("/topic/stocks", dto);
+        return ResponseEntity.status(201).body(dto);
     }
 
     @PutMapping("/{id}/price")
     public ResponseEntity<?> updatePrice(@PathVariable Long id, @Valid @RequestBody PriceUpdateRequest req){
-        System.out.println(req);
         var updated = stockService.updatePrice(id, req.getCurrentPrice());
-        return ResponseEntity.ok(toDto(updated));
+        StockDto dto = toDto(updated);
+        messagingTemplate.convertAndSend("/topic/stocks", dto);
+        return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         stockService.delete(id);
+        messagingTemplate.convertAndSend("/topic/stocks/delete", id);
         return ResponseEntity.noContent().build();
     }
 

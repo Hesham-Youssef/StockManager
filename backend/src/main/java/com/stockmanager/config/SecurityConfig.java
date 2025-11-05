@@ -69,6 +69,7 @@ public class SecurityConfig {
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/ws/**").permitAll()  // <-- allow websocket handshake
                 .requestMatchers(HttpMethod.GET, "/api/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
