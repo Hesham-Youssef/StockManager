@@ -10,7 +10,7 @@ export default function useWebSocket({ onExchangeUpdate, onExchangeDelete, onSto
       connectHeaders: {},
       debug: (str) => console.log(str),
       reconnectDelay: 5000,
-      webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+      webSocketFactory: () => new SockJS(process.env.REACT_APP_WS_URL),
     });
 
     client.onConnect = () => {

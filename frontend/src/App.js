@@ -27,7 +27,7 @@ function App() {
 
           <div className="container mt-5 pt-4">
             <Routes>
-              {/* 🚪 Public routes */}
+              {/* Public routes */}
               <Route
                 path="/login"
                 element={
@@ -45,7 +45,7 @@ function App() {
                 }
               />
 
-              {/* 🔒 Protected routes */}
+              {/* Protected routes */}
               <Route
                 path="/exchanges"
                 element={

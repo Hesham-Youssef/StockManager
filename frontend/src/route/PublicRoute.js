@@ -10,7 +10,7 @@ function PublicRoute({ children }) {
       const decoded = jwtDecode(token);
       const now = Date.now() / 1000;
       if (decoded.exp && decoded.exp > now) {
-        // ✅ User already logged in → redirect away
+        // User already logged in → redirect away
         return <Navigate to="/exchanges" replace />;
       } else {
         localStorage.removeItem("jwtToken");
