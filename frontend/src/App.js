@@ -9,10 +9,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import StockExchangeList from "./components/StockExchangeList";
-import StockList from "./components/StockList";
-import LoginPage from "./components/LoginPage";
-import RegisterPage from "./components/RegisterPage";
+import StockExchangeList from "./page/StockExchangeList";
+import StockList from "./page/StockList";
+import LoginPage from "./page/LoginPage";
+import RegisterPage from "./page/RegisterPage";
 import Navbar from "./components/Navbar";
 import PrivateRoute from "./route/PrivateRoute";
 import PublicRoute from "./route/PublicRoute";

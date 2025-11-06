@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.stockmanager.entity.Stock;
+import com.stockmanager.entity.StockPriceHistory;
 import com.stockmanager.exception.NotFoundException;
 import com.stockmanager.repository.StockExchangeRepository;
+import com.stockmanager.repository.StockPriceHistoryRepository;
 import com.stockmanager.repository.StockRepository;
 
 import lombok.AllArgsConstructor;
@@ -20,6 +22,7 @@ import lombok.AllArgsConstructor;
 public class StockService {
     private final StockRepository stockRepository;
     private final StockExchangeRepository stockExchangeRepository;
+    private final StockPriceHistoryRepository stockPriceHistoryRepository;
 
     public List<Stock> listAll(){
         return stockRepository.findAll();
@@ -28,6 +31,10 @@ public class StockService {
     public Stock getById(Long id){
         return stockRepository.findById(id).orElseThrow(() -> new NotFoundException("Stock not found: " + id));
     }
+    
+    public List<StockPriceHistory> getPriceHistory(Long stockId) {
+        return stockPriceHistoryRepository.findByStockIdOrderByTimestampAsc(stockId);
+    }
 
     @Transactional
     public Stock create(String name, String description, BigDecimal currentPrice){
@@ -35,16 +42,38 @@ public class StockService {
         s.setName(name);
         s.setDescription(description);
         s.setCurrentPrice(currentPrice);
-        s.setLastUpdate(Instant.now());
+        
+        Instant currInstant = Instant.now();        
+        s.setLastUpdate(currInstant);
+
+        StockPriceHistory history = StockPriceHistory.builder()
+            .stock(s)
+            .price(currentPrice)
+            .timestamp(currInstant)
+            .build();
+        s.getPriceHistory().add(history);
         return stockRepository.save(s);
     }
 
     @Transactional
-    public Stock updatePrice(Long id, BigDecimal newPrice){
-        
-        Stock s = stockRepository.findById(id).orElseThrow(() -> new NotFoundException("Stock not found: " + id));
+    public Stock updatePrice(Long id, BigDecimal newPrice) {
+
+        Stock s = stockRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Stock not found: " + id));
+
+        Instant currInstant = Instant.now();
+
+        // Save current price in history
+        StockPriceHistory history = StockPriceHistory.builder()
+                .stock(s)
+                .price(newPrice)
+                .timestamp(currInstant)
+                .build();
+        s.getPriceHistory().add(history);
+
+        // Update current price
         s.setCurrentPrice(newPrice);
-        s.setLastUpdate(Instant.now());
+        s.setLastUpdate(currInstant);
         return stockRepository.save(s);
     }
 

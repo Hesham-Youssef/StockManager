@@ -1,22 +1,22 @@
 -- =========================
 -- STOCK TABLE SEED DATA
 -- =========================
-INSERT INTO stock (name, description, current_price, last_update, version) VALUES
-('Apple Inc.', 'Technology company that designs, manufactures, and markets consumer electronics and software.', 192.45, CURRENT_TIMESTAMP, 1),
-('Microsoft Corp.', 'Global leader in software, cloud computing, and AI solutions.', 345.22, CURRENT_TIMESTAMP, 1),
-('Tesla Inc.', 'Electric vehicle and clean energy company.', 248.77, CURRENT_TIMESTAMP, 1),
-('Amazon.com Inc.', 'E-commerce and cloud computing giant.', 134.89, CURRENT_TIMESTAMP, 1),
-('Alphabet Inc.', 'Parent company of Google, specializing in internet and AI technologies.', 141.05, CURRENT_TIMESTAMP, 1),
-('NVIDIA Corp.', 'Leading manufacturer of GPUs for gaming and AI.', 468.32, CURRENT_TIMESTAMP, 1),
-('Meta Platforms Inc.', 'Social media and virtual reality company (Facebook, Instagram, etc.).', 310.40, CURRENT_TIMESTAMP, 1),
-('Intel Corp.', 'Semiconductor manufacturer focused on CPUs and data center technologies.', 43.10, CURRENT_TIMESTAMP, 1),
-('Saudi Aramco', 'Saudi Arabian national petroleum and natural gas company.', 55.30, CURRENT_TIMESTAMP, 1),
-('IBM Corp.', 'Enterprise software, consulting, and cloud computing company.', 172.14, CURRENT_TIMESTAMP, 1),
-('Oracle Corp.', 'Enterprise software and database company.', 125.18, CURRENT_TIMESTAMP, 1),
-('Cisco Systems Inc.', 'Networking hardware and telecommunications equipment provider.', 52.67, CURRENT_TIMESTAMP, 1),
-('Adobe Inc.', 'Software company best known for Photoshop and Acrobat.', 568.44, CURRENT_TIMESTAMP, 1),
-('Broadcom Inc.', 'Semiconductor and infrastructure software company.', 921.12, CURRENT_TIMESTAMP, 1),
-('Qualcomm Inc.', 'Wireless telecommunications and chip manufacturer.', 129.40, CURRENT_TIMESTAMP, 1);
+INSERT INTO stock (name, description, current_price, last_update) VALUES
+('Apple Inc.', 'Technology company that designs, manufactures, and markets consumer electronics and software.', 192.45, CURRENT_TIMESTAMP),
+('Microsoft Corp.', 'Global leader in software, cloud computing, and AI solutions.', 345.22, CURRENT_TIMESTAMP),
+('Tesla Inc.', 'Electric vehicle and clean energy company.', 248.77, CURRENT_TIMESTAMP),
+('Amazon.com Inc.', 'E-commerce and cloud computing giant.', 134.89, CURRENT_TIMESTAMP),
+('Alphabet Inc.', 'Parent company of Google, specializing in internet and AI technologies.', 141.05, CURRENT_TIMESTAMP),
+('NVIDIA Corp.', 'Leading manufacturer of GPUs for gaming and AI.', 468.32, CURRENT_TIMESTAMP),
+('Meta Platforms Inc.', 'Social media and virtual reality company (Facebook, Instagram, etc.).', 310.40, CURRENT_TIMESTAMP),
+('Intel Corp.', 'Semiconductor manufacturer focused on CPUs and data center technologies.', 43.10, CURRENT_TIMESTAMP),
+('Saudi Aramco', 'Saudi Arabian national petroleum and natural gas company.', 55.30, CURRENT_TIMESTAMP),
+('IBM Corp.', 'Enterprise software, consulting, and cloud computing company.', 172.14, CURRENT_TIMESTAMP),
+('Oracle Corp.', 'Enterprise software and database company.', 125.18, CURRENT_TIMESTAMP),
+('Cisco Systems Inc.', 'Networking hardware and telecommunications equipment provider.', 52.67, CURRENT_TIMESTAMP),
+('Adobe Inc.', 'Software company best known for Photoshop and Acrobat.', 568.44, CURRENT_TIMESTAMP),
+('Broadcom Inc.', 'Semiconductor and infrastructure software company.', 921.12, CURRENT_TIMESTAMP),
+('Qualcomm Inc.', 'Wireless telecommunications and chip manufacturer.', 129.40, CURRENT_TIMESTAMP);
 
 -- =========================
 -- STOCK EXCHANGE SEED DATA
@@ -69,3 +69,24 @@ SELECT e.id, s.id FROM stock_exchange e, stock s
 WHERE e.name = 'Saudi Exchange (Tadawul)' AND s.name IN (
   'Saudi Aramco', 'Apple Inc.', 'Microsoft Corp.', 'IBM Corp.'
 );
+
+
+INSERT INTO stock_price_history (stock_id, price, timestamp)
+SELECT s.id, s.current_price * 0.95, DATEADD('DAY', -5, CURRENT_TIMESTAMP)
+FROM stock s;
+
+INSERT INTO stock_price_history (stock_id, price, timestamp)
+SELECT s.id, s.current_price * 0.97, DATEADD('DAY', -3, CURRENT_TIMESTAMP)
+FROM stock s;
+
+INSERT INTO stock_price_history (stock_id, price, timestamp)
+SELECT s.id, s.current_price * 1.02, DATEADD('DAY', -2, CURRENT_TIMESTAMP)
+FROM stock s;
+
+INSERT INTO stock_price_history (stock_id, price, timestamp)
+SELECT s.id, s.current_price * 0.99, DATEADD('DAY', -1, CURRENT_TIMESTAMP)
+FROM stock s;
+
+INSERT INTO stock_price_history (stock_id, price, timestamp)
+SELECT s.id, s.current_price, CURRENT_TIMESTAMP
+FROM stock s;

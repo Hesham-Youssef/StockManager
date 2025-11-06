@@ -3,8 +3,7 @@ CREATE TABLE IF NOT EXISTS stock (
   name VARCHAR(255) UNIQUE NOT NULL,
   description VARCHAR(1000),
   current_price DECIMAL(19,4) NOT NULL,
-  last_update TIMESTAMP NOT NULL,
-  version BIGINT
+  last_update TIMESTAMP NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS stock_exchange (

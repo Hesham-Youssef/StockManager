@@ -16,7 +16,7 @@ const StockExchangeList = () => {
   const [stocks, setStocks] = useState([]);
   const [newForm, setNewForm] = useState({ name: "", description: "", liveInMarket: false });
   const [editingExchanges, setEditingExchanges] = useState({});
-  const [selectedStockId, setSelectedStockId] = useState("");
+  const [selectedStockIds, setSelectedStockIds] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: "name", direction: "asc" });
   const [showLiveOnly, setShowLiveOnly] = useState(false);
@@ -109,14 +109,16 @@ const StockExchangeList = () => {
   };
 
   const handleAddStock = async (exchangeId) => {
-    if (!selectedStockId) return toast.warning("Please select a stock first");
+    const stockId = selectedStockIds[exchangeId];
+    if (!stockId) return toast.warning("Please select a stock first");
     const exchange = exchanges.find((ex) => ex.id === exchangeId);
     if (!exchange) return toast.error("Exchange not found");
-    if (exchange.stockIds.includes(parseInt(selectedStockId))) return toast.info("Stock already listed");
+    if (exchange.stockIds.includes(parseInt(stockId)))
+      return toast.info("Stock already listed");
     try {
-      await addStockToExchange(exchangeId, selectedStockId);
+      await addStockToExchange(exchangeId, stockId);
       toast.success("Stock added!");
-      setSelectedStockId("");
+      setSelectedStockIds((prev) => ({ ...prev, [exchangeId]: "" })); // reset
       loadData();
     } catch {
       toast.error("Failed to add stock");
@@ -378,9 +380,14 @@ const StockExchangeList = () => {
                     <div className="d-flex gap-2 mt-auto">
                       <select
                         className="form-select form-select-sm flex-grow-1"
-                        onChange={(e) => setSelectedStockId(e.target.value)}
+                        onChange={(e) =>
+                          setSelectedStockIds((prev) => ({
+                            ...prev,
+                            [ex.id]: e.target.value,
+                          }))
+                        }
                         disabled={editing}
-                        value={selectedStockId}
+                        value={selectedStockIds[ex.id] || ""} // per exchange
                       >
                         <option value="">Select stock</option>
                         {stocks
@@ -392,7 +399,6 @@ const StockExchangeList = () => {
                             </option>
                           ))}
                       </select>
-
                       <button
                         className="btn btn-sm btn-success"
                         onClick={() => handleAddStock(ex.id)}

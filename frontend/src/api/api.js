@@ -96,3 +96,6 @@ export const addStockToExchange = (exchangeId, stockId) =>
   api.post(`/exchanges/${exchangeId}/stocks`, { stockId });
 export const removeStockFromExchange = (exchangeId, stockId) =>
   api.delete(`/exchanges/${exchangeId}/stocks/${stockId}`);
+
+export const getStockPriceHistory = (stockId) =>
+  api.get(`/stocks/${stockId}/history`);

@@ -55,12 +55,6 @@ public class AuthController {
         return ResponseEntity.status(201).body(Map.of("message", "User created"));
     }
 
-    private boolean allowAdminRegistration() {
-        // For security, disallow open admin registration in prod.
-        // You can allow via env flag or seed admin in DB.
-        return false;
-    }
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest req) {
         Authentication auth = authenticationManager.authenticate(

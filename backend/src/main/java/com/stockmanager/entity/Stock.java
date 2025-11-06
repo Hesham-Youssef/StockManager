@@ -1,17 +1,20 @@
 package com.stockmanager.entity;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -37,9 +40,9 @@ public class Stock {
     @Column(name = "last_update", nullable = false)
     private Instant lastUpdate;
 
-    @Version
-    private Long version;
-
     @ManyToMany(mappedBy = "stocks")
     private Set<StockExchange> exchanges = new HashSet<>();
+
+    @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL)
+    private List<StockPriceHistory> priceHistory = new ArrayList<>();
 }

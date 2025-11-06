@@ -1,6 +1,7 @@
 package com.stockmanager.controller;
 
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
@@ -62,6 +63,14 @@ public class StockController {
         stockService.delete(id);
         messagingTemplate.convertAndSend("/topic/stocks/delete", id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/history")
+    public ResponseEntity<?> getPriceHistory(@PathVariable Long id) {
+        var history = stockService.getPriceHistory(id).stream()
+            .map(h -> Map.of("price", h.getPrice(), "timestamp", h.getTimestamp()))
+            .toList();
+        return ResponseEntity.ok(history);
     }
 
     private StockDto toDto(Stock s){
