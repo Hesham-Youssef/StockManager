@@ -64,7 +64,7 @@ function App() {
               />
 
               {/* Default */}
-              <Route path="/" element={<Navigate to="/exchanges" />} />
+              <Route path="*" element={<Navigate to="/stocks" />} />
             </Routes>
           </div>
 

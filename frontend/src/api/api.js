@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { toast } from "react-toastify";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+const API_BASE_URL = window._env_?.REACT_APP_API_BASE_URL || process.env.REACT_APP_API_BASE_URL;
 
 // === Axios instance ===
 export const api = axios.create({
@@ -39,9 +39,16 @@ api.interceptors.response.use(
       if (error.response.status === 401) {
         toast.error("Session expired. Please log in again.");
         localStorage.removeItem('jwtToken');
-        window.location.href = "/login"; // optional redirect
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
       }
-
+      else if (error.response.status === 403) {
+        toast.error("Access denied: You don't have permission to perform this action.");
+      } 
+      else {
+        toast.error(message, { autoClose: 4000 });
+      }
     } else if (error.request) {
       message = "Server not reachable. Please check your connection.";
     } else {
